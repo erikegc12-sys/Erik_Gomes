@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erik Gomes — Editor de Vídeo · Estrategista de Mídia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060606;
+  --bg2: #0a0a0a;
+  --bg3: #111;
+  --text: #f5f2ee;
+  --text2: #aaa;
+  --text3: #555;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.04);
+  --white: #fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR ── */
+#cur{position:fixed;width:8px;height:8px;background:#fff;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;mix-blend-mode:difference}
+#cur-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(255,255,255,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .08s ease-out,width .2s,height .2s}
+#cur-glow{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,transparent 65%);border-radius:50%;pointer-events:none;z-index:1;transform:translate(-50%,-50%)}
+
+/* ── LANG TOGGLE ── */
+#lang-toggle{
+  position:fixed;top:1.5rem;right:1.5rem;z-index:200;
+  display:flex;gap:0;border:1px solid var(--border);border-radius:100px;overflow:hidden;
+}
+.lang-btn{
+  background:transparent;color:var(--text2);border:none;padding:.4rem .9rem;
+  font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  cursor:none;transition:background .2s,color .2s;
+}
+.lang-btn.active{background:#fff;color:#000}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 3rem;
+  background:rgba(6,6,6,.9);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border2);
+}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;letter-spacing:-.02em;color:#fff}
+.nav-links{display:flex;gap:2.5rem;align-items:center}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:#fff}
+.nav-cta{
+  border:1px solid rgba(255,255,255,.25);color:#fff!important;
+  padding:.55rem 1.3rem;border-radius:100px;
+  transition:background .3s,border-color .3s!important;
+}
+.nav-cta:hover{background:#fff;color:#000!important;border-color:#fff!important}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;
+  padding:9rem 2rem 5rem;position:relative;overflow:hidden;
+}
+.hero-grain{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:.5;
+}
+.hero-tag{font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--text3);margin-bottom:2rem;opacity:0;animation:fadeUp .9s .3s forwards}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4.5rem,11vw,9.5rem);
+  font-weight:300;line-height:.95;letter-spacing:-.03em;
+  opacity:0;animation:fadeUp .9s .5s forwards;
+}
+.hero-title em{font-style:italic;color:rgba(255,255,255,.45)}
+.hero-sub{margin-top:2.5rem;color:var(--text2);font-size:.95rem;max-width:380px;line-height:1.75;opacity:0;animation:fadeUp .9s .8s forwards}
+.hero-btns{margin-top:3rem;display:flex;gap:1rem;opacity:0;animation:fadeUp .9s 1s forwards}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.6rem;opacity:0;animation:fadeUp .9s 1.3s forwards}
+.scroll-line{width:1px;height:55px;background:linear-gradient(to bottom,#fff,transparent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.2}50%{opacity:.7}}
+
+/* ── BTNS ── */
+.btn-w{
+  background:#fff;color:#000;border:none;
+  padding:.85rem 2rem;border-radius:100px;
+  font-family:'Outfit',sans-serif;font-size:.82rem;letter-spacing:.08em;
+  cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+  transition:background .3s,transform .2s,color .3s;
+}
+.btn-w:hover{background:rgba(255,255,255,.85);transform:translateY(-2px)}
+.btn-o{
+  background:transparent;color:#fff;
+  border:1px solid rgba(255,255,255,.2);
+  padding:.85rem 2rem;border-radius:100px;
+  font-family:'Outfit',sans-serif;font-size:.82rem;letter-spacing:.08em;
+  cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+  transition:border-color .3s,transform .2s,background .3s;
+}
+.btn-o:hover{border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
+
+/* ── MARQUEE ── */
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.9rem 0;background:var(--bg2)}
+.marquee-track{display:flex;white-space:nowrap;animation:marquee 35s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text3);padding:0 2rem}
+.marquee-dot{color:var(--text3);padding:0 .2rem}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTIONS ── */
+.section-wrap{padding:8rem 3rem;max-width:1280px;margin:0 auto}
+.section-tag{font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,5vw,4.5rem);font-weight:300;line-height:1.05;margin-bottom:3.5rem}
+
+/* ── SERVICES ── */
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid var(--border);gap:1px;background:var(--border)}
+.service-card{
+  background:var(--bg);padding:3rem;position:relative;overflow:hidden;
+  transition:background .4s;
+}
+.service-card::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.02);opacity:0;transition:opacity .4s}
+.service-card:hover{background:#0e0e0e}
+.service-card:hover::after{opacity:1}
+.svc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.svc-num{font-size:.65rem;letter-spacing:.2em;color:var(--text3)}
+.svc-tags{display:flex;gap:.4rem}
+.svc-tag{
+  font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--border);color:var(--text2);
+  padding:.25rem .6rem;border-radius:100px;
+}
+.svc-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;margin-bottom:.8rem}
+.svc-desc{color:var(--text2);font-size:.85rem;line-height:1.75}
+
+/* ── WORKS ── */
+.works-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:3rem}
+.filter-btn{
+  background:transparent;border:1px solid var(--border);color:var(--text3);
+  padding:.45rem 1.1rem;border-radius:100px;
+  font-family:'Outfit',sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  cursor:none;transition:all .25s;
+}
+.filter-btn.active,.filter-btn:hover{background:#fff;border-color:#fff;color:#000}
+.works-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.work-card{
+  background:var(--bg);position:relative;overflow:hidden;
+  cursor:none;transition:background .4s;
+}
+.work-card:hover{background:#0e0e0e}
+.work-card.hidden{display:none}
+.work-thumb{width:100%;aspect-ratio:16/10;overflow:hidden;position:relative;background:#111}
+.work-thumb img{
+  width:100%;height:100%;object-fit:cover;
+  filter:grayscale(100%) brightness(.85);
+  transition:filter .6s,transform .6s;
+  display:block;
+}
+.work-card:hover .work-thumb img{filter:grayscale(0%) brightness(1);transform:scale(1.04)}
+.work-badge{
+  position:absolute;top:.9rem;right:.9rem;
+  background:rgba(6,6,6,.9);border:1px solid rgba(255,255,255,.15);
+  font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;
+  padding:.28rem .65rem;border-radius:100px;color:#fff;
+}
+.work-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .3s;
+}
+.work-card:hover .work-overlay{opacity:1}
+.work-play{width:50px;height:50px;border:1.5px solid rgba(255,255,255,.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff}
+.work-info{padding:1.5rem}
+.work-cats{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem}
+.work-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;margin-bottom:.2rem;line-height:1.2}
+.work-client{color:var(--text3);font-size:.75rem;margin-bottom:.7rem}
+.work-desc{color:var(--text2);font-size:.78rem;line-height:1.65;margin-bottom:.7rem}
+.work-metrics{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)}
+
+/* ── VIDEO MODAL ── */
+#modal{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.95);
+  display:none;align-items:center;justify-content:center;
+  padding:2rem;
+}
+#modal.open{display:flex}
+.modal-inner{
+  max-width:960px;width:100%;
+  background:var(--bg2);border:1px solid var(--border);
+  position:relative;
+  animation:fadeUp .4s forwards;
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;z-index:10;
+  background:rgba(255,255,255,.08);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;font-size:1rem;
+  cursor:none;transition:background .2s;display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-video{width:100%;aspect-ratio:16/9;background:#000}
+.modal-video iframe{width:100%;height:100%;border:none}
+.modal-body{padding:2rem 2.5rem 2.5rem}
+.modal-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.modal-tag{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--border);color:var(--text2);padding:.25rem .65rem;border-radius:100px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;margin-bottom:.3rem}
+.modal-client{color:var(--text3);font-size:.85rem;margin-bottom:1rem}
+.modal-desc{color:var(--text2);font-size:.875rem;line-height:1.8;margin-bottom:1.5rem}
+.modal-metrics{display:flex;gap:2rem;flex-wrap:wrap;padding:1.2rem;background:var(--bg3);margin-bottom:1.5rem}
+.modal-metric-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem}
+.modal-metric-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff}
+.modal-link{display:inline-flex;align-items:center;gap:.5rem}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.about-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,4vw,3.8rem);font-weight:300;line-height:1.15;margin-bottom:1.5rem}
+.about-desc{color:var(--text2);line-height:1.85;margin-bottom:2rem;font-size:.9rem}
+.about-bullets{list-style:none;margin-bottom:2.5rem}
+.about-bullets li{color:var(--text2);font-size:.85rem;line-height:1.7;padding-left:1.3rem;position:relative;margin-bottom:.4rem}
+.about-bullets li::before{content:'✦';position:absolute;left:0;color:#fff;font-size:.55rem;top:.35rem}
+.about-bullets b{color:#fff;font-weight:400}
+.stats-row{display:flex;gap:3rem;margin-top:2rem;padding:2rem 0;border-top:1px solid var(--border)}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;line-height:1;color:#fff}
+.stat-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-top:.3rem}
+
+/* SOFTWARE SKILLS */
+.skills-title{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--text3);margin-bottom:1.2rem;margin-top:2.5rem}
+.skills-row{display:flex;gap:.6rem;flex-wrap:wrap}
+.skill-pill{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--bg3);border:1px solid var(--border);
+  padding:.5rem 1rem;border-radius:100px;
+  font-size:.75rem;color:var(--text2);
+  transition:border-color .3s,color .3s;
+}
+.skill-pill:hover{border-color:rgba(255,255,255,.3);color:#fff}
+.skill-pill svg{width:14px;height:14px;flex-shrink:0}
+
+/* EXP */
+.exp-section-title{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text3);margin-bottom:1.5rem;margin-top:2.5rem;padding-top:2.5rem;border-top:1px solid var(--border)}
+.exp-item{display:flex;justify-content:space-between;align-items:flex-start;padding:.9rem 0;border-bottom:1px solid var(--border2)}
+.exp-role{font-size:.875rem;margin-bottom:.2rem}
+.exp-company{font-size:.75rem;color:var(--text3)}
+.exp-date{font-size:.7rem;color:var(--text3);letter-spacing:.05em;white-space:nowrap;margin-left:1rem}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.testi-card{background:var(--bg);padding:2.5rem;transition:background .3s}
+.testi-card:hover{background:#0e0e0e}
+.testi-quote-icon{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:var(--border);line-height:1;margin-bottom:1rem;font-style:italic}
+.testi-text{color:var(--text2);font-size:.85rem;line-height:1.8;margin-bottom:1.5rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:.75rem}
+.testi-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;letter-spacing:.05em}
+.testi-name{font-size:.85rem;font-weight:400}
+.testi-role{font-size:.72rem;color:var(--text3)}
+
+/* CTA FULL */
+.cta-full{
+  text-align:center;padding:9rem 2rem;
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--bg2);
+}
+.cta-bg-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Cormorant Garamond',serif;font-size:clamp(8rem,20vw,18rem);
+  font-weight:300;color:rgba(255,255,255,.02);white-space:nowrap;
+  pointer-events:none;letter-spacing:-.05em;line-height:1;
+}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6.5rem);font-weight:300;line-height:1.05;max-width:860px;margin:0 auto 1.5rem;position:relative}
+.cta-title em{font-style:italic;color:rgba(255,255,255,.45)}
+.cta-sub{color:var(--text2);font-size:.9rem;margin-bottom:3rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.75;position:relative}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.contact-item{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;color:var(--text2);font-size:.875rem}
+.contact-icon{width:16px;text-align:center;color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-group{margin-bottom:1rem}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.875rem;
+  padding:.75rem 0;outline:none;transition:border-color .3s;resize:none;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text3)}
+.form-group input:focus,.form-group textarea:focus{border-bottom-color:rgba(255,255,255,.4)}
+.form-group textarea{min-height:110px}
+.form-submit{width:100%;text-align:center;justify-content:center;letter-spacing:.12em}
+
+/* FOOTER */
+footer{
+  padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600}
+.footer-copy{color:var(--text3);font-size:.72rem}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{color:var(--text3);text-decoration:none;font-size:.72rem;transition:color .3s}
+.footer-links a:hover{color:#fff}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .85s ease,transform .85s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ANIMS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* NOISE */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9000;opacity:.35}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem}
+  .nav-links{display:none}
+  .section-wrap{padding:5rem 1.5rem}
+  .services-grid,.works-grid,.testi-grid,.about-grid,.contact-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .stats-row{gap:1.5rem}
+  footer{flex-direction:column;gap:1rem;text-align:center}
+  .modal-body{padding:1.5rem}
+  .modal-metrics{gap:1rem}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="cur-glow"></div>
+
+<!-- LANG TOGGLE -->
+<div id="lang-toggle">
+  <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- VIDEO MODAL -->
+<div id="modal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-video"><iframe id="modal-iframe" allowfullscreen></iframe></div>
+    <div class="modal-body">
+      <div class="modal-tags" id="modal-tags"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <p class="modal-client" id="modal-client"></p>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-metrics" id="modal-metrics"></div>
+      <a id="modal-link" href="#" target="_blank" class="btn-w" style="font-size:.8rem">
+        <span data-pt="Ver no YouTube" data-en="Watch on YouTube">Ver no YouTube</span> ↗
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Erik.</div>
+  <div class="nav-links">
+    <a href="#services" data-pt="Serviços" data-en="Services">Serviços</a>
+    <a href="#works" data-pt="Trabalhos" data-en="Works">Trabalhos</a>
+    <a href="#about" data-pt="Sobre" data-en="About">Sobre</a>
+    <a href="#testimonials" data-pt="Depoimentos" data-en="Testimonials">Depoimentos</a>
+    <a href="https://wa.me/5521985760984" target="_blank" class="nav-cta" data-pt="Fale Comigo" data-en="Get in Touch">Fale Comigo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%;padding-top:0">
+  <div class="hero-grain"></div>
+  <p class="hero-tag" data-pt="Editor de Vídeo · Estrategista de Mídia" data-en="Video Editor · Media Strategist">Editor de Vídeo · Estrategista de Mídia</p>
+  <h1 class="hero-title">
+    <span data-pt="Transformando ideias em" data-en="Turning ideas into">Transformando ideias em</span><br>
+    <em><span data-pt="vídeos de alta" data-en="high performing">vídeos de alta</span></em><br>
+    <span data-pt="performance" data-en="performance">performance</span>
+  </h1>
+  <p class="hero-sub" data-pt="Editor premiado confiado por marcas reconhecidas globalmente." data-en="Award-winning editor trusted by globally recognized brands.">Editor premiado confiado por marcas reconhecidas globalmente.</p>
+  <div class="hero-btns">
+    <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
+      <span data-pt="Fale Comigo" data-en="Get in Touch">Fale Comigo</span>
+    </a>
+    <a href="#works" class="btn-o">
+      <span data-pt="Ver Trabalhos" data-en="View Work">Ver Trabalhos</span>
+    </a>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">High-Performance Editing</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">YouTube Production</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Creative Direction</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Motion Design</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Visual Identity</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Brand Storytelling</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Social Ads</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">3D & Motion</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">High-Performance Editing</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">YouTube Production</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Creative Direction</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Motion Design</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Visual Identity</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Brand Storytelling</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Social Ads</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">3D & Motion</span><span class="marquee-dot">✦</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="section-wrap">
+  <p class="section-tag reveal" data-pt="O que eu faço" data-en="What I Do">O que eu faço</p>
+  <h2 class="section-title reveal" data-pt="Serviços" data-en="Services">Serviços</h2>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="svc-header">
+        <span class="svc-num">01</span>
+        <div class="svc-tags"><span class="svc-tag">ADS</span><span class="svc-tag">CREATIVE</span></div>
+      </div>
+      <h3 class="svc-name" data-pt="Edição Social de Alta Performance" data-en="High-Performance Social Editing">Edição Social de Alta Performance</h3>
+      <p class="svc-desc" data-pt="Pensamento estratégico aliado a criatividade para criar conteúdo que ressoa, cativa e converte em plataformas sociais." data-en="Strategic thinking meets creative flair to craft content that resonates, captivates, and converts across social platforms.">Pensamento estratégico aliado a criatividade para criar conteúdo que ressoa, cativa e converte em plataformas sociais.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-header">
+        <span class="svc-num">02</span>
+        <div class="svc-tags"><span class="svc-tag">MOTION</span><span class="svc-tag">CREATIVE</span></div>
+      </div>
+      <h3 class="svc-name" data-pt="Produção para YouTube" data-en="YouTube Production">Produção para YouTube</h3>
+      <p class="svc-desc" data-pt="Intuição artística com visão estratégica para produzir conteúdo de formato longo que constrói autoridade e retenção de audiência." data-en="Artistic intuition with strategic insight to produce long-form content that builds authority and audience retention.">Intuição artística com visão estratégica para produzir conteúdo de formato longo que constrói autoridade e retenção de audiência.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-header">
+        <span class="svc-num">03</span>
+        <div class="svc-tags"><span class="svc-tag">CREATIVE</span><span class="svc-tag">ADS</span></div>
+      </div>
+      <h3 class="svc-name" data-pt="Direção Criativa & Estratégia" data-en="Creative Direction & Strategy">Direção Criativa & Estratégia</h3>
+      <p class="svc-desc" data-pt="Combinando funcionalidade com estética para criar experiências de conteúdo que geram resultados mensuráveis." data-en="Blending functionality with aesthetics to create delightful content experiences that drive measurable results.">Combinando funcionalidade com estética para criar experiências de conteúdo que geram resultados mensuráveis.</p>
+    </div>
+    <div class="service-card">
+      <div class="svc-header">
+        <span class="svc-num">04</span>
+        <div class="svc-tags"><span class="svc-tag">MOTION</span><span class="svc-tag">3D</span></div>
+      </div>
+      <h3 class="svc-name" data-pt="Motion Design & Identidade Visual" data-en="Motion Design & Visual Identity">Motion Design & Identidade Visual</h3>
+      <p class="svc-desc" data-pt="Pensamento estratégico e precisão artística para criar identidades visuais que vão além da estética — até o storytelling de marca." data-en="Strategic thinking and artistic finesse to craft visual identities that go beyond aesthetics into brand storytelling.">Pensamento estratégico e precisão artística para criar identidades visuais que vão além da estética — até o storytelling de marca.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works" class="section-wrap" style="padding-top:0">
+  <p class="section-tag reveal" data-pt="Portfólio" data-en="Portfolio">Portfólio</p>
+  <h2 class="section-title reveal" data-pt="Trabalhos Selecionados" data-en="Selected Work">Trabalhos Selecionados</h2>
+  <div class="works-filters reveal">
+    <button class="filter-btn active" data-filter="all" data-pt="Todos" data-en="All Work">Todos</button>
+    <button class="filter-btn" data-filter="ads">ADS</button>
+    <button class="filter-btn" data-filter="creative">CREATIVE</button>
+    <button class="filter-btn" data-filter="motion">MOTION</button>
+    <button class="filter-btn" data-filter="3d">3D</button>
+  </div>
+  <div class="works-grid" id="works-grid">
+
+    <div class="work-card reveal" data-category="motion creative"
+      data-title="Motion Graphics for YouTube"
+      data-client="J.P. Morgan"
+      data-cats="Motion · YouTube"
+      data-badge="Authority"
+      data-desc-pt="Peça de motion de alto impacto para elevar o storytelling e a autoridade visual de um canal de YouTube focado em finanças."
+      data-desc-en="High-impact motion piece to elevate storytelling and visual authority of a finance-focused YouTube channel."
+      data-metrics-pt="500K+ Visualizações|Premium Brand Positioning|Alta Autoridade"
+      data-metrics-en="500K+ Views|Premium Brand Positioning|High Authority"
+      data-metrics-labels-pt="Alcance|Posicionamento|Impacto"
+      data-metrics-labels-en="Reach|Positioning|Impact"
+      data-yt-id="YYC2alXYVig"
+      data-url="https://youtu.be/YYC2alXYVig">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/YYC2alXYVig/maxresdefault.jpg" alt="JP Morgan Motion Graphics" loading="lazy">
+        <span class="work-badge">Authority</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Motion · YouTube</p>
+        <h3 class="work-title">Motion Graphics for YouTube</h3>
+        <p class="work-client">J.P. Morgan</p>
+        <p class="work-desc" data-pt="Peça de motion de alto impacto para elevar o storytelling e a autoridade visual." data-en="High-impact motion piece to elevate storytelling and visual authority.">Peça de motion de alto impacto para elevar o storytelling e a autoridade visual.</p>
+        <p class="work-metrics" data-pt="500K+ Visualizações · Premium Brand Positioning" data-en="500K+ Views · Premium Brand Positioning">500K+ Visualizações · Premium Brand Positioning</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="creative"
+      data-title="Aftermovie Production"
+      data-client="Leadership Immersion"
+      data-cats="Cinematic · Creative"
+      data-badge="Branding"
+      data-desc-pt="Experiência cinematográfica de alto impacto capturando a essência do evento de liderança."
+      data-desc-en="Built a high-impact cinematic experience capturing the essence of the leadership event."
+      data-metrics-pt="200K+ Alcance|Destaque do Evento|Branding Premium"
+      data-metrics-en="200K+ Reach|Event Highlight|Premium Branding"
+      data-metrics-labels-pt="Alcance|Formato|Posicionamento"
+      data-metrics-labels-en="Reach|Format|Positioning"
+      data-yt-id="owdYb4ObDuc"
+      data-url="https://youtu.be/owdYb4ObDuc">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/owdYb4ObDuc/maxresdefault.jpg" alt="Leadership Immersion Aftermovie" loading="lazy">
+        <span class="work-badge">Branding</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Cinematic · Creative</p>
+        <h3 class="work-title">Aftermovie Production</h3>
+        <p class="work-client">Leadership Immersion</p>
+        <p class="work-desc" data-pt="Experiência cinematográfica de alto impacto capturando a essência do evento." data-en="High-impact cinematic experience capturing the essence of the event.">Experiência cinematográfica de alto impacto capturando a essência do evento.</p>
+        <p class="work-metrics" data-pt="Event Highlight · 200K+ Alcance" data-en="Event Highlight · 200K+ Reach">Event Highlight · 200K+ Alcance</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="motion creative"
+      data-title="Full Video Editing & Motion Graphics"
+      data-client="Red Bull × G4 Educação"
+      data-cats="YouTube · Motion"
+      data-badge="Engagement"
+      data-desc-pt="Produção de vídeo completa para um dos conteúdos de maior performance da G4 Educação."
+      data-desc-en="Complete end-to-end video production for one of G4 Educação's highest-performing content pieces."
+      data-metrics-pt="1.2M+ Visualizações|Top Performing Content|Alta Retenção"
+      data-metrics-en="1.2M+ Views|Top Performing Content|High Retention"
+      data-metrics-labels-pt="Visualizações|Posição|Retenção"
+      data-metrics-labels-en="Views|Position|Retention"
+      data-yt-id="ewor46CqyN0"
+      data-url="https://www.youtube.com/watch?v=ewor46CqyN0">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/ewor46CqyN0/maxresdefault.jpg" alt="Red Bull G4 Motion Graphics" loading="lazy">
+        <span class="work-badge">Engagement</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">YouTube · Motion</p>
+        <h3 class="work-title">Full Video Editing & Motion Graphics</h3>
+        <p class="work-client">Red Bull × G4 Educação</p>
+        <p class="work-desc" data-pt="Produção completa para o conteúdo de maior performance da G4 Educação." data-en="Complete production for G4 Educação's highest-performing content.">Produção completa para o conteúdo de maior performance da G4 Educação.</p>
+        <p class="work-metrics" data-pt="1.2M+ Visualizações · Top Performing Content" data-en="1.2M+ Views · Top Performing Content">1.2M+ Visualizações · Top Performing Content</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="creative"
+      data-title="China Experience"
+      data-client="Tallis Gomes"
+      data-cats="Cinematic · Creative"
+      data-badge="Retention"
+      data-desc-pt="Edição cinematográfica premium para um documentário de alta retenção no YouTube."
+      data-desc-en="Premium cinematic editing for a high-retention YouTube documentary experience."
+      data-metrics-pt="Alta Retenção|Premium Positioning|Documentário"
+      data-metrics-en="High Retention|Premium Positioning|Documentary"
+      data-metrics-labels-pt="Retenção|Posicionamento|Formato"
+      data-metrics-labels-en="Retention|Positioning|Format"
+      data-yt-id="LZqKNSPcXHk"
+      data-url="https://youtu.be/LZqKNSPcXHk">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/LZqKNSPcXHk/maxresdefault.jpg" alt="China Experience Cinematic" loading="lazy">
+        <span class="work-badge">Retention</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Cinematic · Creative</p>
+        <h3 class="work-title">China Experience</h3>
+        <p class="work-client">Tallis Gomes</p>
+        <p class="work-desc" data-pt="Edição cinematográfica premium para documentário de alta retenção no YouTube." data-en="Premium cinematic editing for a high-retention YouTube documentary.">Edição cinematográfica premium para documentário de alta retenção no YouTube.</p>
+        <p class="work-metrics" data-pt="Premium Brand Positioning · Alta Retenção" data-en="Premium Brand Positioning · High Retention">Premium Brand Positioning · Alta Retenção</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="ads"
+      data-title="High-Converting Product Ad"
+      data-client="Statik 360"
+      data-cats="Ads · Product"
+      data-badge="Conversion"
+      data-desc-pt="Anúncio de produto orientado a performance criado para maximizar conversão e recall de marca."
+      data-desc-en="Performance-driven product advertisement crafted to maximize conversion and brand recall."
+      data-metrics-pt="Alta Conversão|Direct Response|ROI Elevado"
+      data-metrics-en="High Conversion|Direct Response|High ROI"
+      data-metrics-labels-pt="Conversão|Formato|ROI"
+      data-metrics-labels-en="Conversion|Format|ROI"
+      data-yt-id="SkEF5Izt4do"
+      data-url="https://youtu.be/SkEF5Izt4do">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/SkEF5Izt4do/maxresdefault.jpg" alt="Statik 360 Product Ad" loading="lazy">
+        <span class="work-badge">Conversion</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Ads · Product</p>
+        <h3 class="work-title">High-Converting Product Ad</h3>
+        <p class="work-client">Statik 360</p>
+        <p class="work-desc" data-pt="Anúncio de produto para maximizar conversão e recall de marca." data-en="Product advertisement to maximize conversion and brand recall.">Anúncio de produto para maximizar conversão e recall de marca.</p>
+        <p class="work-metrics" data-pt="Alta Conversão · Direct Response" data-en="High Conversion · Direct Response">Alta Conversão · Direct Response</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="motion creative"
+      data-title="Leadership Academy Key Visual"
+      data-client="G4 Educação"
+      data-cats="Motion · Branding"
+      data-badge="Branding"
+      data-desc-pt="Produção de key visual cinematográfico para o programa flagship de liderança da G4, formato wide."
+      data-desc-en="Cinematic key visual production for G4's flagship leadership program, wide format."
+      data-metrics-pt="Campanha Flagship|Brand Authority|Key Visual"
+      data-metrics-en="Flagship Campaign|Brand Authority|Key Visual"
+      data-metrics-labels-pt="Tipo|Autoridade|Formato"
+      data-metrics-labels-en="Type|Authority|Format"
+      data-yt-id="K1JrIe1x8BQ"
+      data-url="https://youtu.be/K1JrIe1x8BQ">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/K1JrIe1x8BQ/maxresdefault.jpg" alt="G4 Leadership Academy Wide" loading="lazy">
+        <span class="work-badge">Branding</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Motion · Branding</p>
+        <h3 class="work-title">Leadership Academy Key Visual</h3>
+        <p class="work-client">G4 Educação</p>
+        <p class="work-desc" data-pt="Key visual cinematográfico para o programa flagship de liderança da G4." data-en="Cinematic key visual for G4's flagship leadership program.">Key visual cinematográfico para o programa flagship de liderança da G4.</p>
+        <p class="work-metrics" data-pt="Campanha Flagship · Brand Authority" data-en="Flagship Campaign · Brand Authority">Campanha Flagship · Brand Authority</p>
+      </div>
+    </div>
+
+    <div class="work-card reveal" data-category="motion ads"
+      data-title="Leadership Academy Key Visual (Reels)"
+      data-client="G4 Educação"
+      data-cats="Motion · Reels"
+      data-badge="Social"
+      data-desc-pt="Adaptação em formato vertical da campanha Leadership Academy para máximo alcance em redes sociais."
+      data-desc-en="Vertical format adaptation of the Leadership Academy campaign for maximum social media reach."
+      data-metrics-pt="Formato Reels|Alto Engajamento|Social First"
+      data-metrics-en="Reels Format|High Engagement|Social First"
+      data-metrics-labels-pt="Formato|Engajamento|Estratégia"
+      data-metrics-labels-en="Format|Engagement|Strategy"
+      data-yt-id="zlE2U9FDXko"
+      data-url="https://youtu.be/zlE2U9FDXko">
+      <div class="work-thumb">
+        <img src="https://img.youtube.com/vi/zlE2U9FDXko/maxresdefault.jpg" alt="G4 Leadership Reels" loading="lazy">
+        <span class="work-badge">Social</span>
+        <div class="work-overlay"><div class="work-play">▶</div></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cats">Motion · Reels</p>
+        <h3 class="work-title">Leadership Academy Key Visual (Reels)</h3>
+        <p class="work-client">G4 Educação</p>
+        <p class="work-desc" data-pt="Adaptação vertical para máximo alcance em redes sociais." data-en="Vertical adaptation for maximum social media reach.">Adaptação vertical para máximo alcance em redes sociais.</p>
+        <p class="work-metrics" data-pt="Formato Reels · Alto Engajamento" data-en="Reels Format · High Engagement">Formato Reels · Alto Engajamento</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA MID -->
+<div class="cta-full">
+  <div class="cta-bg-text">ERIK</div>
+  <h2 class="cta-title">
+    <span data-pt="Pronto para criar" data-en="Ready to create">Pronto para criar</span><br>
+    <em><span data-pt="algo extraordinário?" data-en="something extraordinary?">algo extraordinário?</span></em>
+  </h2>
+  <p class="cta-sub" data-pt="Vamos criar experiências cinematográficas e storytelling poderoso para elevar sua marca. 🎬" data-en="Let's craft cinematic experiences and powerful storytelling to elevate your brand. 🎬">Vamos criar experiências cinematográficas e storytelling poderoso para elevar sua marca. 🎬</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
+      <span data-pt="💬 Chamar no WhatsApp" data-en="💬 Chat on WhatsApp">💬 Chamar no WhatsApp</span>
+    </a>
+    <a href="mailto:erikegc12@gmail.com" class="btn-o">
+      <span data-pt="✉ Enviar E-mail" data-en="✉ Send an Email">✉ Enviar E-mail</span>
+    </a>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="section-wrap">
+  <div class="about-grid">
+    <div class="about-left reveal">
+      <p class="section-tag" data-pt="Sobre" data-en="About">Sobre</p>
+      <h2 class="about-title">Hi 👋<br><span data-pt="Sou Erik Gomes" data-en="I'm Erik Gomes">Sou Erik Gomes</span></h2>
+      <p class="about-desc" data-pt="Editor de vídeo e estrategista criativo focado em conteúdo de alta performance para redes sociais. Meu trabalho une visão cinematográfica com pensamento data-driven para entregar vídeos que não só parecem bons — mas que realmente performam." data-en="A video editor and creative strategist focused on high-performance social media content. My work blends cinematic vision with data-driven thinking to deliver videos that don't just look good — but actually perform.">Editor de vídeo e estrategista criativo focado em conteúdo de alta performance para redes sociais. Meu trabalho une visão cinematográfica com pensamento data-driven para entregar vídeos que não só parecem bons — mas que realmente performam.</p>
+      <ul class="about-bullets">
+        <li><span data-pt="Editei vídeos que superaram" data-en="Edited videos that surpassed">Editei vídeos que superaram</span> <b>10M+ views</b> <span data-pt="em diversas plataformas" data-en="across platforms">em diversas plataformas</span></li>
+        <li><span data-pt="Criei uma" data-en="Created a">Criei uma</span> <b><span data-pt="peça viral de 7M de views" data-en="7M view viral piece">peça viral de 7M de views</span></b> <span data-pt="para a G4 Educação" data-en="for G4 Educação">para a G4 Educação</span></li>
+        <li><span data-pt="Trabalhei com grandes empreendedores e marcas em storytelling & direção criativa" data-en="Worked with major entrepreneurs and brands on storytelling & creative direction">Trabalhei com grandes empreendedores e marcas em storytelling & direção criativa</span></li>
+      </ul>
+
+      <div class="skills-title" data-pt="Ferramentas & Software" data-en="Tools & Software">Ferramentas & Software</div>
+      <div class="skills-row">
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#9999FF"/><path d="M6 17.5V6.5l5.5 5.5L17 6.5v11" stroke="#000" stroke-width="1.5"/></svg>
+          After Effects
+        </div>
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#9999FF"/><path d="M8 6h8v12H8z" fill="#000" opacity=".3"/><path d="M4 9l4-3v12l-4-3V9z" fill="#000"/></svg>
+          Premiere Pro
+        </div>
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#E87D0D"/><path d="M12 4L4 19h16L12 4z" fill="#fff" opacity=".8"/></svg>
+          Blender
+        </div>
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#31A8FF"/><path d="M7 17V7h10v10H7z" fill="#003B5C" opacity=".5"/><circle cx="12" cy="12" r="4" fill="#fff" opacity=".6"/></svg>
+          Photoshop
+        </div>
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F24E1E"/><circle cx="9" cy="9" r="3" stroke="#fff" stroke-width="1.5"/><circle cx="15" cy="15" r="3" stroke="#fff" stroke-width="1.5"/><path d="M12 9h3v3" stroke="#fff" stroke-width="1.2"/></svg>
+          Figma
+        </div>
+        <div class="skill-pill">
+          <svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#FF7C00"/><path d="M5 19V8l7-3 7 3v11" stroke="#fff" stroke-width="1.5"/><rect x="9" y="13" width="6" height="6" fill="#fff" opacity=".6"/></svg>
+          DaVinci
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-num" data-target="5" data-suffix="+">0</div>
+          <div class="stat-label" data-pt="Anos de Experiência" data-en="Years Experience">Anos de Experiência</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" data-target="10.5" data-suffix="M+">0</div>
+          <div class="stat-label" data-pt="Total de Views" data-en="Total Views">Total de Views</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" data-target="2.3" data-prefix="R$" data-suffix="M">0</div>
+          <div class="stat-label" data-pt="Receita Gerada" data-en="Revenue Generated">Receita Gerada</div>
+        </div>
+      </div>
+      <div style="margin-top:2.5rem">
+        <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
+          <span data-pt="Fale Comigo" data-en="Get in Touch">Fale Comigo</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="about-right reveal">
+      <div class="exp-section-title" data-pt="Experiência" data-en="Experience">Experiência</div>
+      <div class="exp-item"><div><div class="exp-role">Post Production Editor</div><div class="exp-company">G4 Educação</div></div><div class="exp-date">Mar 2025 — <span data-pt="Presente" data-en="Present">Presente</span></div></div>
+      <div class="exp-item"><div><div class="exp-role">Video Editor & Marketing</div><div class="exp-company">Leal Pontes</div></div><div class="exp-date">Jan 2022 — Mar 2023</div></div>
+      <div class="exp-item"><div><div class="exp-role">UI/UX & Video Editor</div><div class="exp-company">Pináculo Digital</div></div><div class="exp-date">May 2020 — Dec 2021</div></div>
+      <div class="exp-item"><div><div class="exp-role">Branding Strategist</div><div class="exp-company">SuperAutor</div></div><div class="exp-date">Feb 2019 — Mar 2020</div></div>
+
+      <div class="exp-section-title" data-pt="Educação" data-en="Education">Educação</div>
+      <div class="exp-item"><div><div class="exp-role">Motion Master</div><div class="exp-company">Layer Lemonade</div></div><div class="exp-date">2022 — Now</div></div>
+      <div class="exp-item"><div><div class="exp-role">Full-time Video Editor</div><div class="exp-company">Brainstorm Academy</div></div><div class="exp-date">2018 — 2020</div></div>
+      <div class="exp-item"><div><div class="exp-role">Audiovisual</div><div class="exp-company">Descomplica</div></div><div class="exp-date">2020 — 2025</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section-wrap" style="padding-top:0">
+  <p class="section-tag reveal" data-pt="O que dizem" data-en="Kind Words">O que dizem</p>
+  <h2 class="section-title reveal" data-pt="Depoimentos" data-en="Testimonials">Depoimentos</h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-quote-icon">"</div>
+      <p class="testi-text">"Que trabalho animal, parabéns demais. Uso de letterings no meu canal e estética nova premium foi do Car%alh@!"</p>
+      <div class="testi-author">
+        <div class="testi-avatar">TG</div>
+        <div><div class="testi-name">Tallis Gomes</div><div class="testi-role"><span data-pt="Fundador" data-en="Founder">Fundador</span>, G4 Educação</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-quote-icon">"</div>
+      <p class="testi-text">"Animal, a ajuda de um dos colaboradores que hoje fazem parte da NUAGE mudou o aniversário do G4 em 2025. Animal o trampo estratégico."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RZ</div>
+        <div><div class="testi-name">Rafael Zambinati</div><div class="testi-role">CMO, G4 Educação</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-quote-icon">"</div>
+      <p class="testi-text">"Vídeo que o Erik colocou no ar, estética e criação, bombou! O vídeo mais visto do meu canal inclusive!"</p>
+      <div class="testi-author">
+        <div class="testi-avatar">BN</div>
+        <div><div class="testi-name">Bruno Nardon</div><div class="testi-role"><span data-pt="Co-fundador" data-en="Co-founder">Co-fundador</span>, G4 Educação</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-wrap" style="padding-top:0">
+  <div class="contact-grid">
+    <div class="contact-left reveal">
+      <p class="section-tag" data-pt="Contato" data-en="Contact">Contato</p>
+      <h2 class="section-title" style="margin-bottom:2rem" data-pt="Ou me manda<br>uma mensagem" data-en="Or drop me<br>a message">Ou me manda<br>uma mensagem</h2>
+      <div class="contact-info">
+        <div class="contact-item"><span class="contact-icon">📞</span><span>+55 21 98576-0984</span></div>
+        <div class="contact-item"><span class="contact-icon">✉</span><span>erikegc12@gmail.com</span></div>
+      </div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem">
+        <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
+          <span data-pt="💬 WhatsApp" data-en="💬 WhatsApp">💬 WhatsApp</span>
+        </a>
+        <a href="mailto:erikegc12@gmail.com" class="btn-o">
+          <span data-pt="✉ E-mail" data-en="✉ Email">✉ E-mail</span>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group"><input type="text" id="f-name" placeholder="" required></div>
+          <div class="form-group"><input type="email" id="f-email" placeholder="" required></div>
+        </div>
+        <div class="form-group"><input type="text" id="f-subject" placeholder=""></div>
+        <div class="form-group"><textarea id="f-msg" placeholder=""></textarea></div>
+        <button type="submit" class="btn-w form-submit" data-pt="Enviar Mensagem" data-en="Send Message">Enviar Mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="cta-full">
+  <div class="cta-bg-text">GOMES</div>
+  <h2 class="cta-title">
+    <span data-pt="Vamos criar algo" data-en="Let's create">Vamos criar algo</span><br>
+    <em><span data-pt="incrível juntos." data-en="incredible together.">incrível juntos.</span></em>
+  </h2>
+  <p class="cta-sub" data-pt="Disponível para projetos freelance e colaborações de longo prazo." data-en="Available for freelance projects and long-term collaborations.">Disponível para projetos freelance e colaborações de longo prazo.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
+      <span data-pt="💬 Chamar no WhatsApp" data-en="💬 Chat on WhatsApp">💬 Chamar no WhatsApp</span>
+    </a>
+    <a href="mailto:erikegc12@gmail.com" class="btn-o">
+      <span data-pt="✉ Enviar E-mail" data-en="✉ Send an Email">✉ Enviar E-mail</span>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Erik.</div>
+  <div class="footer-copy">© 2025 Erik Gomes. <span data-pt="Todos os direitos reservados." data-en="All rights reserved.">Todos os direitos reservados.</span></div>
+  <div class="footer-links">
+    <a href="https://wa.me/5521985760984" target="_blank">WhatsApp</a>
+    <a href="mailto:erikegc12@gmail.com">Email</a>
+    <a href="#works" data-pt="Trabalhos" data-en="Works">Trabalhos</a>
+  </div>
+</footer>
+
+<script>
+// ── LANG ──
+let currentLang = 'pt';
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = val;
+    else el.innerHTML = val;
+  });
+  // form placeholders
+  const placeholders = {
+    pt: { name:'Seu nome', email:'Seu e-mail', subject:'Assunto', msg:'Me conta sobre o seu projeto...' },
+    en: { name:'Your name', email:'Your email', subject:'Subject', msg:'Tell me about your project...' }
+  };
+  const p = placeholders[lang];
+  const fi = document.getElementById('f-name'); if(fi) fi.placeholder = p.name;
+  const fe = document.getElementById('f-email'); if(fe) fe.placeholder = p.email;
+  const fs = document.getElementById('f-subject'); if(fs) fs.placeholder = p.subject;
+  const fm = document.getElementById('f-msg'); if(fm) fm.placeholder = p.msg;
+  // filter buttons text
+  const allBtn = document.querySelector('[data-filter="all"]');
+  if(allBtn) allBtn.textContent = lang === 'pt' ? 'Todos' : 'All Work';
+  // work card descs & metrics
+  document.querySelectorAll('.work-card').forEach(card => {
+    const desc = card.querySelector('.work-desc');
+    const metrics = card.querySelector('.work-metrics');
+    if(desc && card.dataset['desc'+lang.charAt(0).toUpperCase()+lang.slice(1)]) {
+      const key = 'desc' + (lang==='pt'?'Pt':'En');
+      if(card.dataset[key]) desc.textContent = card.dataset[key];
+    }
+    if(metrics) {
+      const key = 'metrics' + (lang==='pt'?'Pt':'En');
+      if(card.dataset[key]) metrics.textContent = card.dataset[key].split('|').join(' · ');
+    }
+  });
+  // contact section title
+  const ctitle = document.querySelector('#contact .section-title');
+  if(ctitle) ctitle.innerHTML = lang==='pt' ? 'Ou me manda<br>uma mensagem' : 'Or drop me<br>a message';
+}
+// init placeholders
+setLang('pt');
+document.querySelector('[data-lang="pt"]').classList.add('active');
+
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+const glow = document.getElementById('cur-glow');
+let mx=0,my=0,gx=0,gy=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  ring.style.left=mx+'px'; ring.style.top=my+'px';
+});
+function glowAnim(){
+  gx+=(mx-gx)*.05; gy+=(my-gy)*.05;
+  glow.style.left=gx+'px'; glow.style.top=gy+'px';
+  requestAnimationFrame(glowAnim);
+}
+glowAnim();
+document.querySelectorAll('a,button,.work-card,.filter-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='52px';ring.style.height='52px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='36px';ring.style.height='36px'});
+});
+
+// ── REVEAL ──
+const revObserver = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(r=>revObserver.observe(r));
+
+// ── FILTERS ──
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.work-card').forEach(card=>{
+      card.classList.toggle('hidden', f!=='all' && !card.dataset.category.includes(f));
+    });
+  });
+});
+
+// ── MODAL ──
+function openModal(card) {
+  const ytId = card.dataset.ytId;
+  const lang = currentLang;
+  document.getElementById('modal-iframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+  document.getElementById('modal-title').textContent = card.dataset.title;
+  document.getElementById('modal-client').textContent = card.dataset.client;
+  const descKey = lang==='pt' ? 'descPt' : 'descEn';
+  document.getElementById('modal-desc').textContent = card.dataset[descKey] || card.dataset.descPt;
+  document.getElementById('modal-link').href = card.dataset.url;
+  // tags
+  const tagsEl = document.getElementById('modal-tags');
+  tagsEl.innerHTML = '';
+  card.dataset.cats.split('·').forEach(t=>{
+    const span = document.createElement('span');
+    span.className = 'modal-tag';
+    span.textContent = t.trim();
+    tagsEl.appendChild(span);
+  });
+  // badge
+  const badge = document.createElement('span');
+  badge.className = 'modal-tag';
+  badge.style.borderColor = 'rgba(255,255,255,.2)';
+  badge.textContent = card.dataset.badge;
+  tagsEl.appendChild(badge);
+  // metrics
+  const metricsEl = document.getElementById('modal-metrics');
+  metricsEl.innerHTML = '';
+  const mKey = lang==='pt' ? 'metricsPt' : 'metricsEn';
+  const lKey = lang==='pt' ? 'metricsLabelsPt' : 'metricsLabelsEn';
+  const vals = (card.dataset[mKey]||card.dataset.metricsPt).split('|');
+  const labels = (card.dataset[lKey]||card.dataset.metricsLabelsPt).split('|');
+  vals.forEach((val,i)=>{
+    const div = document.createElement('div');
+    div.innerHTML = `<div class="modal-metric-label">${labels[i]||''}</div><div class="modal-metric-val">${val}</div>`;
+    metricsEl.appendChild(div);
+  });
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('modal-iframe').src = '';
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.work-card').forEach(card=>{
+  card.addEventListener('click',e=>{ if(!e.target.closest('a')) openModal(card); });
+});
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+// ── COUNTERS ──
+function animCount(el) {
+  const target = parseFloat(el.dataset.target);
+  const prefix = el.dataset.prefix||'';
+  const suffix = el.dataset.suffix||'';
+  const dur = 2200;
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now-start)/dur,1);
+    const ease = 1-Math.pow(1-t,3);
+    const cur = ease*target;
+    el.textContent = prefix+(Number.isInteger(target)?Math.floor(cur):cur.toFixed(1))+suffix;
+    if(t<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const cntObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ animCount(e.target); cntObs.unobserve(e.target); } });
+},{threshold:.5});
+document.querySelectorAll('.stat-num[data-target]').forEach(n=>cntObs.observe(n));
+
+// ── CONTACT FORM → EMAIL ──
+document.getElementById('contactForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name = document.getElementById('f-name').value;
+  const email = document.getElementById('f-email').value;
+  const subject = document.getElementById('f-subject').value;
+  const msg = document.getElementById('f-msg').value;
+  const body = `Nome: ${name}\nE-mail: ${email}\n\n${msg}`;
+  window.location.href = `mailto:erikegc12@gmail.com?subject=${encodeURIComponent(subject||'Contato via site - '+name)}&body=${encodeURIComponent(body)}`;
+});
+
+// ── PARALLAX HERO ──
+window.addEventListener('scroll',()=>{
+  const s = window.scrollY;
+  const hero = document.getElementById('hero');
+  if(hero && s < window.innerHeight) hero.style.transform = `translateY(${s*.25}px)`;
+});
+</script>
+</body>
+</html>
