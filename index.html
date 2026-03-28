@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Erik Gomes — Video Editor · Media Strategist</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060606'/%3E%3Ctext x='16' y='23' font-family='Georgia%2C serif' font-size='22' font-weight='400' fill='%23f5f2ee' text-anchor='middle' font-style='italic' letter-spacing='-1'%3EE%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('AfTIMqFbHVQU-IEfV');</script>
 <style>
 :root{--bg:#060606;--bg2:#0a0a0a;--bg3:#111;--text:#f5f2ee;--text2:#aaa;--text3:#555;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.04)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -226,15 +229,24 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <div class="modal-inner">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-video"><iframe id="modal-iframe" allowfullscreen></iframe></div>
+    <div id="modal-video2-wrap" style="display:none;width:100%;background:#000;border-top:1px solid rgba(255,255,255,.08)">
+      <div id="modal-video2-label" style="padding:.6rem 1.5rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:#555;background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,.06)">▼ Versão Reels</div>
+      <div style="aspect-ratio:16/9"><iframe id="modal-iframe2" allowfullscreen style="width:100%;height:100%;border:none"></iframe></div>
+    </div>
     <div class="modal-body">
       <div class="modal-tags" id="modal-tags"></div>
       <h2 class="modal-title" id="modal-title"></h2>
       <p class="modal-client" id="modal-client"></p>
       <p class="modal-desc" id="modal-desc"></p>
       <div class="modal-metrics" id="modal-metrics"></div>
-      <a id="modal-link" href="#" target="_blank" class="btn-w" style="font-size:.8rem">
-        <span data-en="Watch on YouTube" data-pt="Ver no YouTube">Watch on YouTube</span> ↗
-      </a>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <a id="modal-link" href="#" target="_blank" class="btn-w" style="font-size:.8rem">
+          <span data-en="Watch on YouTube" data-pt="Ver no YouTube">Watch on YouTube</span> ↗
+        </a>
+        <a id="modal-link2" href="#" target="_blank" class="btn-o" style="font-size:.8rem;display:none">
+          <span data-en="Watch Reels Version" data-pt="Ver Versão Reels">Ver Versão Reels</span> ↗
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -450,7 +462,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             </div>
           </div>
         </div>
-        <div class="work-card" data-category="motion creative" data-title="Leadership Academy Key Visual" data-client="G4 Educação" data-cats="Motion · Branding" data-badge="Branding" data-desc-en="Cinematic wide-format key visual for G4's flagship Leadership Academy — combining 3D elements, motion design and brand-led cinematography to convey authority, scale and aspiration at Brazil's top leadership event." data-desc-pt="Key visual cinematográfico widescreen para o programa flagship Leadership Academy da G4." data-metrics-en="Flagship|3D+Motion|Wide" data-metrics-pt="Flagship|3D+Motion|Wide" data-metrics-labels-en="Campaign|Technique|Format" data-metrics-labels-pt="Campanha|Técnica|Formato" data-yt-id="K1JrIe1x8BQ" data-url="https://youtu.be/K1JrIe1x8BQ" data-title-en="Leadership Academy Key Visual" data-title-pt="Leadership Academy Key Visual">
+        <div class="work-card" data-category="motion creative" data-title="Leadership Academy Key Visual" data-client="G4 Educação" data-cats="Motion · Branding" data-badge="Branding" data-desc-en="Cinematic wide-format key visual for G4's flagship Leadership Academy — combining 3D elements, motion design and brand-led cinematography to convey authority, scale and aspiration at Brazil's top leadership event." data-desc-pt="Key visual cinematográfico widescreen para o programa flagship Leadership Academy da G4." data-metrics-en="Flagship|3D+Motion|Wide" data-metrics-pt="Flagship|3D+Motion|Wide" data-metrics-labels-en="Campaign|Technique|Format" data-metrics-labels-pt="Campanha|Técnica|Formato" data-yt-id="K1JrIe1x8BQ" data-url="https://youtu.be/K1JrIe1x8BQ" data-yt-id2="zlE2U9FDXko" data-url2="https://youtu.be/zlE2U9FDXko" data-title-en="Leadership Academy Key Visual" data-title-pt="Leadership Academy Key Visual">
           <div class="work-thumb">
             <img src="https://img.youtube.com/vi/K1JrIe1x8BQ/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/K1JrIe1x8BQ/hqdefault.jpg'" alt="Leadership Academy Key Visual" loading="lazy">
             <span class="work-badge">Branding</span>
@@ -467,26 +479,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             </div>
           </div>
         </div>
-        <div class="work-card" data-category="motion ads" data-title="Leadership Academy — Reels Cut" data-client="G4 Educação" data-cats="Motion · Reels" data-badge="Social" data-desc-en="Platform-native vertical recut of the Leadership Academy campaign — optimized for Reels and TikTok. Hook-first editing, high-energy pacing and native storytelling maximized reach across all social platforms." data-desc-pt="Recut vertical nativo da campanha Leadership Academy — otimizado para Reels e TikTok." data-metrics-en="High|Social|Reels" data-metrics-pt="Alto|Social|Reels" data-metrics-labels-en="Engagement|Platform|Format" data-metrics-labels-pt="Engajamento|Plataforma|Formato" data-yt-id="zlE2U9FDXko" data-url="https://youtu.be/zlE2U9FDXko" data-title-en="Leadership Academy — Reels Cut" data-title-pt="Leadership Academy — Corte Reels">
-          <div class="work-thumb">
-            <img src="https://img.youtube.com/vi/zlE2U9FDXko/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/zlE2U9FDXko/hqdefault.jpg'" alt="Leadership Academy — Reels Cut" loading="lazy">
-            <span class="work-badge">Social</span>
-            <div class="work-overlay"><div class="work-play">&#9654;</div></div>
-          </div>
-          <div class="work-info">
-            <p class="work-cats">Motion · Reels</p>
-            <h3 class="work-title">Leadership Academy — Reels Cut</h3>
-            <p class="work-client">G4 Educação</p>
-            <p class="work-desc">Platform-native vertical recut of the Leadership Academy campaign — optimized for Reels and TikTok. Hook-first editing, high-energy pacing and native storytelling maximized reach across all social platforms.</p>
-            <div class="work-metrics">
-              <div class="work-metric-item"><span class="work-metric-val">High</span><span class="work-metric-label">Engagement</span></div>
-              <div class="work-metric-item"><span class="work-metric-val">Reels</span><span class="work-metric-label">Format</span></div>
-            </div>
-          </div>
-        </div>
         <div class="work-card" data-category="creative motion" data-title="G4 Anniversary Film — 7M Views" data-client="G4 Educação" data-cats="Cinematic · Event" data-badge="Viral" data-desc-en="The viral anniversary film that redefined G4 Educação's brand identity. 7 million views — a strategic cinematic production capturing a decade of impact. Cited by CMO Rafael Zambinati as a turning point in the brand's journey. The most-shared piece in G4's history." data-desc-pt="O filme viral de aniversário que redefiniu a identidade de marca da G4 Educação. 7 milhões de views — produção cinematográfica estratégica que capturou uma década de impacto." data-metrics-en="7M+|Most Shared|Viral" data-metrics-pt="7M+|Mais Compartilhado|Viral" data-metrics-labels-en="Views|Status|Impact" data-metrics-labels-pt="Views|Status|Impacto" data-yt-id="3Os3qj_-5Vs" data-url="https://youtu.be/3Os3qj_-5Vs" data-title-en="G4 Anniversary Film — 7M Views" data-title-pt="Filme Aniversário G4 — 7M Views">
           <div class="work-thumb">
-            <img src="https://img.youtube.com/vi/3Os3qj_-5Vs/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/3Os3qj_-5Vs/hqdefault.jpg'" alt="G4 Anniversary Film — 7M Views" loading="lazy">
+            <img src="https://img.youtube.com/vi/3Os3qj_-5Vs/sddefault.jpg" onerror="this.src='https://img.youtube.com/vi/3Os3qj_-5Vs/hqdefault.jpg'" alt="G4 Anniversary Film — 7M Views" loading="lazy">
             <span class="work-badge">Viral</span>
             <div class="work-overlay"><div class="work-play">&#9654;</div></div>
           </div>
@@ -498,6 +493,23 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             <div class="work-metrics">
               <div class="work-metric-item"><span class="work-metric-val">7M+</span><span class="work-metric-label">Views</span></div>
               <div class="work-metric-item"><span class="work-metric-val">#1</span><span class="work-metric-label">Most Shared</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="work-card" data-category="ads creative" data-title="VSL FG4 — Faturou +100 mil reais" data-client="FG4" data-cats="Ads · VSL" data-badge="Conversion" data-desc-en="High-converting VSL (Video Sales Letter) that generated over R$100K in revenue. Strategic copywriting meets cinematic production — engineered to move viewers from awareness to purchase." data-desc-pt="VSL de alta conversão que gerou mais de R$100 mil em faturamento. Copywriting estratégico aliado a produção cinematográfica — feito para mover o espectador da consciência à compra." data-metrics-en="R$100K+|VSL|High" data-metrics-pt="R$100K+|VSL|Alta" data-metrics-labels-en="Revenue|Format|Conversion" data-metrics-labels-pt="Faturamento|Formato|Conversão" data-yt-id="eaqGWz5yMsw" data-url="https://youtu.be/eaqGWz5yMsw" data-title-en="VSL FG4 — Generated +R$100K" data-title-pt="VSL FG4 — Faturou +100 mil reais">
+          <div class="work-thumb">
+            <img src="https://img.youtube.com/vi/eaqGWz5yMsw/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/eaqGWz5yMsw/hqdefault.jpg'" alt="VSL FG4 — Faturou +100 mil reais" loading="lazy">
+            <span class="work-badge">Conversion</span>
+            <div class="work-overlay"><div class="work-play">&#9654;</div></div>
+          </div>
+          <div class="work-info">
+            <p class="work-cats">Ads · VSL</p>
+            <h3 class="work-title">VSL FG4 — Faturou +100 mil reais</h3>
+            <p class="work-client">FG4</p>
+            <p class="work-desc" data-pt="VSL de alta conversão que gerou mais de R$100 mil em faturamento." data-en="High-converting VSL that generated over R$100K in revenue.">VSL de alta conversão que gerou mais de R$100 mil em faturamento.</p>
+            <div class="work-metrics">
+              <div class="work-metric-item"><span class="work-metric-val">R$100K+</span><span class="work-metric-label">Faturamento</span></div>
+              <div class="work-metric-item"><span class="work-metric-val">VSL</span><span class="work-metric-label">Formato</span></div>
             </div>
           </div>
         </div>
@@ -528,7 +540,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
       <span data-en="💬 Chat on WhatsApp" data-pt="💬 Chamar no WhatsApp">💬 Chat on WhatsApp</span>
     </a>
-    <a href="mailto:erikgomeseditor@gmail.com" class="btn-o">
+    <a href="/cdn-cgi/l/email-protection#ea8f9883818f8d89dbd8aa8d878b8386c4898587" class="btn-o">
       <span data-en="✉ Send an Email" data-pt="✉ Enviar E-mail">✉ Send an Email</span>
     </a>
   </div>
@@ -539,7 +551,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <div class="about-grid">
     <div class="about-left reveal">
       <p class="section-tag" data-en="About" data-pt="Sobre">About</p>
-      <h2 class="about-title" data-en="Hi 👋<br>I'm Erik Gomes" data-pt="Hi 👋<br>Sou Erik Gomes">Hi 👋<br>I'm Erik Gomes</h2>
+      <h2 class="about-title" data-en="Hi 👋<br>I'm Erik Gomes" data-pt="Olá 👋<br>Sou Erik Gomes">Hi 👋<br>I'm Erik Gomes</h2>
       <p class="about-desc" data-en="A video editor and creative strategist focused on high-performance social media content. My work blends cinematic vision with data-driven thinking to deliver videos that don't just look good — but actually perform." data-pt="Editor de vídeo e estrategista criativo focado em conteúdo de alta performance para redes sociais. Meu trabalho une visão cinematográfica com pensamento data-driven para entregar vídeos que não só parecem bons — mas que realmente performam.">A video editor and creative strategist focused on high-performance social media content. My work blends cinematic vision with data-driven thinking to deliver videos that don't just look good — but actually perform.</p>
       <ul class="about-bullets">
         <li><span data-en="Edited videos that surpassed" data-pt="Editei vídeos que superaram">Edited videos that surpassed</span> <b>10M+ views</b> <span data-en="across platforms" data-pt="em diversas plataformas">across platforms</span></li>
@@ -620,13 +632,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <h2 class="section-title" style="margin-bottom:2rem" data-en="Or drop me<br>a message" data-pt="Ou me manda<br>uma mensagem">Or drop me<br>a message</h2>
       <div class="contact-info">
         <div class="contact-item"><span class="contact-icon">📞</span><span>+55 21 98576-0984</span></div>
-        <div class="contact-item"><span class="contact-icon">✉</span><span>erikgomeseditor@gmail.com</span></div>
+        <div class="contact-item"><span class="contact-icon">✉</span><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ea8f9883818f8d89dbd8aa8d878b8386c4898587">[email&#160;protected]</a></span></div>
       </div>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem">
         <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
           <span data-en="💬 WhatsApp" data-pt="💬 WhatsApp">💬 WhatsApp</span>
         </a>
-        <a href="mailto:erikgomeseditor@gmail.com" class="btn-o">
+        <a href="/cdn-cgi/l/email-protection#e08592898b858783d1d2a0878d81898cce838f8d" class="btn-o">
           <span data-en="✉ Email" data-pt="✉ E-mail">✉ Email</span>
         </a>
       </div>
@@ -657,7 +669,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <a href="https://wa.me/5521985760984" target="_blank" class="btn-w">
       <span data-en="💬 Chat on WhatsApp" data-pt="💬 Chamar no WhatsApp">💬 Chat on WhatsApp</span>
     </a>
-    <a href="mailto:erikgomeseditor@gmail.com" class="btn-o">
+    <a href="/cdn-cgi/l/email-protection#482d3a21232d2f2b797a082f25292124662b2725" class="btn-o">
       <span data-en="✉ Send an Email" data-pt="✉ Enviar E-mail">✉ Send an Email</span>
     </a>
   </div>
@@ -669,12 +681,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <div class="footer-copy">© 2025 Erik Gomes. <span data-en="All rights reserved." data-pt="Todos os direitos reservados.">All rights reserved.</span></div>
   <div class="footer-links">
     <a href="https://wa.me/5521985760984" target="_blank">WhatsApp</a>
-    <a href="mailto:erikgomeseditor@gmail.com">Email</a>
+    <a href="/cdn-cgi/l/email-protection#bcd9ced5d7d9dbdf8d8efcdbd1ddd5d092dfd3d1">Email</a>
     <a href="#works" data-en="Works" data-pt="Trabalhos">Works</a>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── LANG ──
 let currentLang = 'en';
 function setLang(lang) {
@@ -729,6 +741,7 @@ document.querySelectorAll('.reveal').forEach(r=>revObserver.observe(r));
 // ── MODAL ──
 function openModal(card) {
   const ytId = card.dataset.ytId;
+  const ytId2 = card.dataset.ytId2;
   const lang = currentLang;
   document.getElementById('modal-iframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
   document.getElementById('modal-title').textContent = card.dataset.title;
@@ -736,6 +749,22 @@ function openModal(card) {
   const descKey = lang==='pt' ? 'descPt' : 'descEn';
   document.getElementById('modal-desc').textContent = card.dataset[descKey] || card.dataset.descEn;
   document.getElementById('modal-link').href = card.dataset.url;
+  // Second video
+  const v2 = document.getElementById('modal-video2-wrap');
+  const if2 = document.getElementById('modal-iframe2');
+  const lk2 = document.getElementById('modal-link2');
+  const lb2 = document.getElementById('modal-video2-label');
+  if (ytId2) {
+    if2.src = `https://www.youtube.com/embed/${ytId2}?rel=0`;
+    lk2.href = card.dataset.url2 || '#';
+    lk2.style.display = 'inline-flex';
+    lb2.textContent = lang==='pt' ? '▼  Versão Reels' : '▼  Reels Version';
+    v2.style.display = '';
+  } else {
+    if2.src = '';
+    lk2.style.display = 'none';
+    v2.style.display = 'none';
+  }
   const tagsEl = document.getElementById('modal-tags');
   tagsEl.innerHTML = '';
   card.dataset.cats.split('·').forEach(t=>{ const s=document.createElement('span'); s.className='modal-tag'; s.textContent=t.trim(); tagsEl.appendChild(s); });
@@ -753,6 +782,7 @@ function openModal(card) {
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.getElementById('modal-iframe').src='';
+  document.getElementById('modal-iframe2').src='';
   document.body.style.overflow='';
 }
 document.querySelectorAll('.work-card').forEach(card=>{ card.addEventListener('click',e=>{ if(!e.target.closest('a')) openModal(card); }); });
@@ -847,20 +877,60 @@ const cntObs = new IntersectionObserver(entries=>{
 },{threshold:.5});
 document.querySelectorAll('.stat-num[data-target]').forEach(n=>cntObs.observe(n));
 
-// ── CONTACT FORM ──
-document.getElementById('contactForm').addEventListener('submit',e=>{
+// ── CONTACT FORM (EmailJS — envio automático sem abrir nenhum app) ──
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const name=document.getElementById('f-name').value;
-  const email=document.getElementById('f-email').value;
-  const subject=document.getElementById('f-subject').value;
-  const msg=document.getElementById('f-msg').value;
-  const body=`Name: ${name}\nEmail: ${email}\n\n${msg}`;
-  window.location.href=`mailto:erikgomeseditor@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const btn = this.querySelector('button[type=submit]');
+  const lang = currentLang;
+  const originalText = btn.textContent;
+  btn.textContent = lang==='pt' ? 'Enviando...' : 'Sending...';
+  btn.disabled = true;
+
+  const name    = document.getElementById('f-name').value;
+  const email   = document.getElementById('f-email').value;
+  const subject = document.getElementById('f-subject').value || ('Contato via site — ' + name);
+  const msg     = document.getElementById('f-msg').value;
+
+  // ── EmailJS config ──
+  // 1. Acesse https://www.emailjs.com e crie conta gratuita
+  // 2. Em "Email Services" conecte seu Gmail
+  // 3. Em "Email Templates" crie um template com as variáveis abaixo
+  // 4. Substitua os 3 valores YOUR_* pelos seus IDs reais
+  const SERVICE_ID  = 'service_aqbddwb';
+  const TEMPLATE_ID = 'ZIMJOX2AbiSL0f7KexjPf';
+
+  try {
+    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      name:    name,        // {{name}} no template
+      email:   email,       // {{email}} no template (Reply To)
+      title:   subject,     // {{title}} no template (Subject)
+      message: msg,         // {{message}} no template
+    });
+    btn.textContent = lang==='pt' ? '✓ Mensagem enviada!' : '✓ Message sent!';
+    btn.style.background = '#2a2a2a';
+    btn.style.color = '#fff';
+    this.reset();
+    setTimeout(()=>{ btn.textContent=originalText; btn.style.background=''; btn.style.color=''; btn.disabled=false; }, 4000);
+  } catch(err) {
+    console.error('EmailJS error:', err);
+    // Fallback: abre cliente de e-mail se EmailJS falhar
+    const body = `Nome: ${name}\nE-mail: ${email}\n\n${msg}`;
+    window.location.href = `mailto:erikegc12@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+});
+
+// ── PARALLAX HERO ──
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY;
+  const hero=document.getElementById('hero');
+  if(hero && s<window.innerHeight) hero.style.transform=`translateY(${s*.2}px)`;
 });
 
 // ── INIT ──
-setLang('en');
 renderCarousel();
+setLang('en');
 </script>
 </body>
 </html>
