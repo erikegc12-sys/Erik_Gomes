@@ -786,7 +786,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="stats-row">
         <div class="stat"><div class="stat-num" data-target="5" data-suffix="+">0</div><div class="stat-label" data-en="Years Experience" data-pt="Anos de Experiência">Years Experience</div></div>
         <div class="stat"><div class="stat-num" data-target="15" data-suffix="M+">0</div><div class="stat-label" data-en="Total Views" data-pt="Total de Views">Total Views</div></div>
-        <div class="stat"><div class="stat-num" data-target="1" data-prefix="$" data-suffix="M+">0</div><div class="stat-label" data-en="Revenue Generated for Clients" data-pt="Receita Gerada para Empresas">Revenue Generated for Clients</div></div>
+        <div class="stat"><div class="stat-num" data-from="100000" data-target="1000000" data-money="1">$100K+</div><div class="stat-label" data-en="Revenue Generated for Clients" data-pt="Receita Gerada para Empresas">Revenue Generated for Clients</div></div>
       </div>
       <div style="margin-top:2.5rem">
         <a href="https://wa.me/5521985760984?text=Hi%20Erik!%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20talk%20about%20a%20project." target="_blank" class="btn-w">
@@ -1165,10 +1165,17 @@ function animCount(el) {
   const suffix = el.dataset.suffix||'';
   const dur = 2200;
   const start = performance.now();
+  const from = parseFloat(el.dataset.from||0);
   function tick(now) {
     const t = Math.min((now-start)/dur,1);
     const ease = 1-Math.pow(1-t,3);
-    const v = ease*target;
+    const v = from + ease*(target-from);
+    if (el.dataset.money) {
+      // $100K+ counting up to $1M+
+      el.textContent = v >= 1000000 ? '$1M+' : '$' + Math.floor(v/1000) + 'K+';
+      if(t<1) requestAnimationFrame(tick);
+      return;
+    }
     el.textContent = prefix+(Number.isInteger(target)?Math.floor(v):v.toFixed(1))+suffix;
     if(t<1) requestAnimationFrame(tick);
   }
